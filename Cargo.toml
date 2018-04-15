@@ -1,0 +1,6 @@
+[package]
+name = "r-olm"
+version = "0.1.0"
+authors = ["brycx <brycx@protonmail.com>", "akritrime <akritrime@gmail.com>"]
+
+[dependencies]
