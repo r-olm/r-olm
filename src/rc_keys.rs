@@ -30,9 +30,9 @@ impl RootChainKeys {
         let hkdf_extract = Hkdf::<Sha256>::extract(&salt, &self.shared_secret);
         // Has to be mut for split_off()
         let mut root_key = hkdf_extract.expand(info.as_bytes(), length);
-        // Split at index 31, to split in the middle
+        // Split at 32, to split in the middle
         // So both the root key and chain zero key are 256 bit in length
-        let chain_key_zero = root_key.split_off(31);
+        let chain_key_zero = root_key.split_off(32);
         assert_eq!(root_key.len(), chain_key_zero.len());
 
         (root_key, chain_key_zero)
@@ -54,7 +54,15 @@ mod test {
     #[test]
     #[should_panic]
     fn long_invalid_length_shared_secret() {
-        let init_root_setup = RootChainKeys { shared_secret: vec![0x01; 60] };
+        let init_root_setup = RootChainKeys { shared_secret: vec![0x01; 120] };
         init_root_setup.compute_initial_keys();
+    }
+
+    #[test]
+    fn root_chain_32_length() {
+        let init_root_setup = RootChainKeys { shared_secret: vec![0x01; 96] };
+        let (rk, ck) = init_root_setup.compute_initial_keys();
+        assert_eq!(rk.len(), 32);
+        assert_eq!(ck.len(), 32);
     }
 }
