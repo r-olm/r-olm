@@ -18,7 +18,6 @@ impl Drop for RootChainKeys {
 impl RootChainKeys {
     //  R0 ∥ C0, 0  = HKDF(0,  S,  "OLM_ROOT",  64)
     // Here || denotes splitting
-    // Should it be split in half?
     pub fn compute_initial_keys(&self) -> (Vec<u8>, Vec<u8>) {
         // These values don't need to be allocated here, but keeping it for now, for easier
         // reference to docs
@@ -31,7 +30,8 @@ impl RootChainKeys {
         let hkdf_extract = Hkdf::<Sha256>::extract(&salt, &self.shared_secret);
         // Has to be mut for split_off()
         let mut root_key = hkdf_extract.expand(info.as_bytes(), length);
-        // Assuming it should be split in half
+        // Split at index 31, to split in the middle
+        // So both the root key and chain zero key are 256 bit in length
         let chain_key_zero = root_key.split_off(31);
         assert_eq!(root_key.len(), chain_key_zero.len());
 
