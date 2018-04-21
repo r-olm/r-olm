@@ -4,3 +4,10 @@ version = "0.1.0"
 authors = ["brycx <brycx@protonmail.com>", "akritrime <akritrime@gmail.com>"]
 
 [dependencies]
+x25519-dalek = "0.1.0"
+ed25519-dalek = "0.6.2"
+rand = "0.4.2"
+hkdf = "0.4.0"
+hmac = "0.6.2"
+sha2 = "0.7.0"
+openssl = "0.10.6"
