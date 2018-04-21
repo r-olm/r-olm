@@ -8,3 +8,4 @@ extern crate openssl;
 extern crate clear_on_drop;
 
 pub mod olm_shared_secret;
+pub mod rc_keys;

@@ -3,6 +3,7 @@ use clear_on_drop::clear::Clear;
 
 // https://git.matrix.org/git/olm/about/docs/olm.rst
 // Section: The Olm Algortihm, Initial setup
+// Genrating shared secret S
 pub struct OlmSharedSecret {
     pub identity_key_alice: [u8; 32],
     pub identity_key_bob: [u8; 32],
@@ -53,6 +54,8 @@ impl OlmSharedSecret {
         shared_S.extend_from_slice(&ecdh_bob_id_alice_pub);
         shared_S.extend_from_slice(&ecdh_alice_pub_bob_pub);
 
+        // Length of this will be 32*3
+        // https://docs.rs/x25519-dalek/0.1.0/x25519_dalek/fn.diffie_hellman.html
         shared_S
     }
 }
