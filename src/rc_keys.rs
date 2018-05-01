@@ -13,7 +13,7 @@ pub struct RootChainKeys { pub shared_secret: Vec<u8> }
 
 impl Drop for RootChainKeys {
     fn drop(&mut self) {
-        self.shared_secret.clear();
+        Clear::clear(&mut self.shared_secret)
     }
 }
 
