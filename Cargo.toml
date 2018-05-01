@@ -12,3 +12,6 @@ hmac = "0.6.2"
 sha2 = "0.7.0"
 openssl = "0.10.6"
 clear_on_drop = "0.2.3"
+
+[dev-dependencies]
+rustc-serialize = "0.3"
