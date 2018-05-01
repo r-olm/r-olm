@@ -41,7 +41,7 @@ def encrypt(text, key, iv):
 
 key = '5EBE2294ECD0E0F08EAB7690D2A6EE6926AE5CC854E36B6BDFCA366848DEA6BB'
 iv  = 'E8C80B4B831FBB64B0D5C6C8499E541A'
-print(encrypt('hello', key, iv))
+print(encrypt('hello', key, iv).decode('utf-8'))
 ";
 
     let py_script = Command::new("echo")
@@ -58,12 +58,13 @@ print(encrypt('hello', key, iv))
                         .expect("Could not execute the pyscript");
     
     let ciphertext_py = String::from_utf8(py_script.stdout).expect("could not get the stdout from py script");
-    let ciphertext_py = ciphertext_py.trim().split("'").nth(1).expect("couldn't get the base64 encrypted string");
+    let ciphertext_py = ciphertext_py.trim();
     
     let cipher = Cipher::aes_256_cbc();
     let key = str::from_hex("5EBE2294ECD0E0F08EAB7690D2A6EE6926AE5CC854E36B6BDFCA366848DEA6BB").expect("Can't get key from hex");
     let iv = str::from_hex("E8C80B4B831FBB64B0D5C6C8499E541A").expect("Can't get iv from hex");
     let ciphertext_rs = encrypt(cipher, &key, Some(&iv), b"hello").unwrap().to_base64(base64::STANDARD);
+    
     assert_eq!(ciphertext_py, ciphertext_rs);
 }
 
