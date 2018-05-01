@@ -14,10 +14,10 @@ pub struct OlmSharedSecret {
 
 impl Drop for OlmSharedSecret {
     fn drop(&mut self) {
-        self.identity_key_alice.clear();
-        self.identity_key_bob.clear();
-        self.one_time_key_alice.clear();
-        self.one_time_key_bob.clear()
+        Clear::clear(&mut self.identity_key_alice);
+        Clear::clear(&mut self.identity_key_bob);
+        Clear::clear(&mut self.one_time_key_alice);
+        Clear::clear(&mut self.one_time_key_bob)
     }
 }
 
