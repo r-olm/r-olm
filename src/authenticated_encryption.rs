@@ -29,7 +29,7 @@ impl EncryptionKeys {
 
     // AES_KEY(i, j) || HMAC_KEY(i, j) || AES_IV(i, j) = HKDF(0, M9i, j), "OLM_KEYS", 80)
     pub fn compute_keys(msg_key: &[u8]) -> Self {
-        let salt = [0u8; 1];
+        let salt = [0u8; 64];
         let info = "OLM_KEYS";
         let length = 80;
         // ikm will be the shared the message key M(i, j)
