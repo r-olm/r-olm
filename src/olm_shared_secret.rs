@@ -1,5 +1,5 @@
-use x25519_dalek::diffie_hellman;
 use clear_on_drop::clear::Clear;
+use x25519_dalek::diffie_hellman;
 
 // https://git.matrix.org/git/olm/about/docs/olm.rst
 // Section: The Olm Algortihm, Initial setup
@@ -8,9 +8,8 @@ pub struct OlmSharedSecret {
     pub identity_key_alice: [u8; 32],
     pub identity_key_bob: [u8; 32],
     pub one_time_key_alice: [u8; 32],
-    pub one_time_key_bob: [u8; 32]
+    pub one_time_key_bob: [u8; 32],
 }
-
 
 impl Drop for OlmSharedSecret {
     fn drop(&mut self) {
@@ -21,12 +20,10 @@ impl Drop for OlmSharedSecret {
     }
 }
 
-
 impl OlmSharedSecret {
     /// S  = ECDH(IA,  EB) ∥ ECDH(EA,  IB) ∥ ECDH(EA,  EB)
     /// Here || denotes concantenation
     pub fn compute(&self) -> Vec<u8> {
-
         // Since we specify the length of the array in the struct, we don't need
         // to check the sizes of the struct fields
 
@@ -35,20 +32,14 @@ impl OlmSharedSecret {
         let mut shared_S = Vec::new();
 
         // ECDH(IA,  EB)
-        let ecdh_alice_id_bob_pub = diffie_hellman(
-            &self.identity_key_alice,
-            &self.one_time_key_bob
-        );
+        let ecdh_alice_id_bob_pub =
+            diffie_hellman(&self.identity_key_alice, &self.one_time_key_bob);
         // ECDH(EA,  IB)
-        let ecdh_bob_id_alice_pub = diffie_hellman(
-            &self.one_time_key_alice,
-            &self.identity_key_bob
-        );
+        let ecdh_bob_id_alice_pub =
+            diffie_hellman(&self.one_time_key_alice, &self.identity_key_bob);
         // ECDH(EA,  EB)
-        let ecdh_alice_pub_bob_pub = diffie_hellman(
-            &self.one_time_key_alice,
-            &self.one_time_key_bob,
-        );
+        let ecdh_alice_pub_bob_pub =
+            diffie_hellman(&self.one_time_key_alice, &self.one_time_key_bob);
 
         shared_S.extend_from_slice(&ecdh_alice_id_bob_pub);
         shared_S.extend_from_slice(&ecdh_bob_id_alice_pub);
@@ -63,14 +54,12 @@ impl OlmSharedSecret {
 #[cfg(test)]
 mod test {
     use olm_shared_secret::OlmSharedSecret;
-    use x25519_dalek::generate_secret;
-    use x25519_dalek::generate_public;
     use rand::OsRng;
-
+    use x25519_dalek::generate_public;
+    use x25519_dalek::generate_secret;
 
     #[test]
     fn init_allowed_length_struct() {
-
         let mut csprng = OsRng::new().unwrap();
 
         let alice_secret = generate_secret(&mut csprng);
@@ -80,7 +69,7 @@ mod test {
             identity_key_alice: generate_public(&alice_secret).to_bytes(),
             identity_key_bob: generate_public(&bob_secret).to_bytes(),
             one_time_key_alice: generate_secret(&mut csprng),
-            one_time_key_bob: generate_secret(&mut csprng)
+            one_time_key_bob: generate_secret(&mut csprng),
         };
     }
 }
